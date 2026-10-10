@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1d1e1c" />
+    <meta name="description" content="Gestión de presupuestos para merchandising empresarial y eventos." />
+    <title>BE MERCH — Presupuestos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="BE MERCH inicio">
+        <img class="brand-mark" src="img/Logo BE Merch largo.png" alt="BE MERCH" />
+      </a>
+      <div class="topbar-actions">
+        <span class="sync-status"><i></i> Guardado</span>
+        <button class="avatar" aria-label="Abrir perfil">AM</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="dashboard-view" id="dashboard-view">
+        <section class="page-heading">
+          <div>
+            <p class="eyebrow">GESTIÓN COMERCIAL</p>
+            <h1>Presupuestos</h1>
+            <p class="heading-copy">Todos los presupuestos creados, en un solo lugar.</p>
+          </div>
+          <button class="button button-dark" id="new-quote">Nuevo presupuesto <span>+</span></button>
+        </section>
+        <section class="quotes-panel" aria-labelledby="quotes-title">
+          <div class="quotes-panel-head">
+            <div><h2 id="quotes-title">Todos los presupuestos</h2><p id="quotes-count">0 presupuestos</p></div>
+          </div>
+          <div class="quotes-list" id="quotes-list"></div>
+          <div class="empty-quotes" id="empty-quotes" hidden>
+            <div class="empty-icon">+</div>
+            <h2>Todavía no hay presupuestos</h2>
+            <p>Creá el primero para comenzar a organizar tus propuestas.</p>
+            <button class="button button-dark" id="empty-new-quote">Crear presupuesto</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="editor-view" id="editor-view" hidden>
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">GESTIÓN COMERCIAL</p>
+          <h1 id="editor-title">Nuevo presupuesto</h1>
+          <p class="heading-copy">Creá propuestas claras que tus clientes quieran aprobar.</p>
+        </div>
+        <div class="heading-actions">
+          <button class="button button-ghost" id="back-to-list">Volver</button>
+          <button class="button button-ghost" id="save-draft">Guardar borrador</button>
+          <button class="button button-dark" id="print-quote">Vista previa <span>↗</span></button>
+        </div>
+      </section>
+
+      <section class="quote-meta" aria-label="Datos generales del presupuesto">
+        <div class="quote-number">
+          <span class="label">PRESUPUESTO</span>
+          <strong id="quote-number">#BM-2026-024</strong>
+        </div>
+        <label class="compact-field">
+          <span>EMISIÓN</span>
+          <input type="date" id="issue-date" />
+        </label>
+        <label class="compact-field">
+          <span>VÁLIDO HASTA</span>
+          <input type="date" id="due-date" />
+        </label>
+        <span class="status-pill">EN EDICIÓN</span>
+      </section>
+
+      <div class="workspace">
+        <section class="editor-column">
+          <article class="card client-card">
+            <div class="card-title">
+              <div class="section-icon">01</div>
+              <div><h2>Cliente y proyecto</h2><p>¿Para quién es esta propuesta?</p></div>
+            </div>
+            <div class="form-grid">
+              <label class="field field-wide"><span>EMPRESA / CLIENTE</span><input id="client-name" placeholder="Ej. Estudio Norte" /></label>
+              <label class="field"><span>PERSONA DE CONTACTO</span><input id="contact-name" placeholder="Nombre y apellido" /></label>
+              <label class="field"><span>EMAIL</span><input id="contact-email" type="email" placeholder="nombre@empresa.com" /></label>
+              <label class="field field-wide"><span>NOMBRE DEL EVENTO O PROYECTO</span><input id="project-name" placeholder="Ej. Kit de bienvenida 2026" /></label>
+            </div>
+          </article>
+
+          <article class="card items-card">
+            <div class="card-title">
+              <div class="section-icon">02</div>
+              <div><h2>Productos y servicios</h2><p>Agregá los detalles de cada ítem.</p></div>
+              <button class="text-button" id="add-item">+ Agregar ítem</button>
+            </div>
+            <div class="items-table">
+              <div class="table-head">
+                <span>DESCRIPCIÓN</span><span>CANT.</span><span>PRECIO UNIT.</span><span>TOTAL</span><span></span>
+              </div>
+              <div id="items-list"></div>
+            </div>
+            <button class="add-mobile" id="add-item-mobile">+ Agregar otro producto o servicio</button>
+          </article>
+
+          <article class="card details-card">
+            <div class="card-title">
+              <div class="section-icon">03</div>
+              <div><h2>Condiciones y notas</h2><p>Información que verá el cliente en el presupuesto.</p></div>
+            </div>
+            <div class="form-grid">
+              <label class="field"><span>CONDICIONES DE PAGO</span>
+                <select id="payment-terms"><option>50% anticipo · 50% contra entrega</option><option>Pago anticipado</option><option>30 días fecha de factura</option></select>
+              </label>
+              <label class="field"><span>TIEMPO DE ENTREGA</span><input id="delivery-time" value="15 a 20 días hábiles" /></label>
+              <label class="field field-wide"><span>OTROS DETALLES</span><textarea id="notes" rows="3" placeholder="Incluí aquí especificaciones, detalles de entrega o aclaraciones importantes."></textarea></label>
+            </div>
+          </article>
+        </section>
+
+        <aside class="summary-column">
+          <div class="summary-card">
+            <div class="summary-heading"><span>RESUMEN</span><span id="summary-count">0 ÍTEMS</span></div>
+            <div class="summary-lines">
+              <div><span>Subtotal</span><strong id="subtotal">$0</strong></div>
+              <label class="tax-line"><span>Impuestos</span><select id="tax-rate"><option value="21">IVA 21%</option><option value="10.5">IVA 10,5%</option><option value="0">Sin IVA</option></select><strong id="tax-total">$0</strong></label>
+            </div>
+            <div class="grand-total"><span>TOTAL</span><strong id="grand-total">$0</strong></div>
+            <button class="button button-lime button-full" id="send-quote">Enviar presupuesto <span>→</span></button>
+            <button class="button button-outline button-full" id="download-quote">Descargar PDF <span>↓</span></button>
+          </div>
+          <p class="autosave-note"><span>●</span> Los cambios se guardan automáticamente.</p>
+        </aside>
+      </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <template id="item-template">
+      <div class="item-row">
+        <input class="item-description" aria-label="Descripción del producto" placeholder="Producto o servicio" />
+        <input class="item-quantity" aria-label="Cantidad" type="number" min="1" value="1" />
+        <input class="item-price" aria-label="Precio unitario" type="number" min="0" step="0.01" placeholder="0" />
+        <strong class="item-total">$0</strong>
+        <button class="remove-item" aria-label="Eliminar ítem">×</button>
+      </div>
+    </template>
+    <template id="quote-template">
+      <article class="quote-row">
+        <button class="quote-main" type="button">
+          <span class="quote-id"></span>
+          <span class="quote-client"></span>
+          <span class="quote-project"></span>
+        </button>
+        <span class="quote-date"></span>
+        <strong class="quote-value"></strong>
+        <select class="quote-status" aria-label="Estado del presupuesto">
+          <option value="Borrador">Borrador</option>
+          <option value="Enviado">Enviado</option>
+          <option value="Aprobado">Aprobado</option>
+          <option value="Rechazado">Rechazado</option>
+        </select>
+      </article>
+    </template>
+    <script src="app.js"></script>
+  </body>
+</html>
