@@ -15,6 +15,7 @@ Abrí `index.html` en un navegador, o serví esta carpeta con cualquier hosting 
 - Condiciones de pago, entrega y notas.
 - Persistencia automática en el navegador, compatible con el borrador previo.
 - Vista de impresión optimizada para guardar el presupuesto como PDF.
+- PDF con identidad visual fija: Verde Boston como color principal y blanco como acento.
 
 ## Publicación online
 

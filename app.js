@@ -4,8 +4,25 @@ const quotesKey = "be-merch-quotes-v1";
 const $ = (selector) => document.querySelector(selector);
 const list = $("#items-list");
 const template = $("#item-template");
-const fields = ["client-name", "contact-name", "contact-email", "project-name", "issue-date", "due-date", "payment-terms", "delivery-time", "notes", "tax-rate", "doc-theme"];
+const fields = ["client-name", "contact-name", "contact-email", "project-name", "issue-date", "due-date", "payment-terms", "delivery-time", "notes", "tax-rate"];
 let activeQuoteId = null;
+const documentColors = {
+  "verde-boston": { dark: "#006B54", accent: "#72B8A3", surface: "#E6F3EF", foreground: "#ffffff" },
+  negro: { dark: "#000000", accent: "#000000", surface: "#f0f0f0", foreground: "#ffffff" },
+  blanco: { dark: "#ffffff", accent: "#ffffff", surface: "#f5f5f5", foreground: "#1e201d" },
+  grafito: { dark: "#1e201d", accent: "#c9cfc2", surface: "#f1f3ed", foreground: "#ffffff" },
+  marino: { dark: "#0f3d5e", accent: "#69d4ff", surface: "#e5f6ff" },
+  bordo: { dark: "#7a1f2b", accent: "#ff917c", surface: "#ffe9e5" },
+  violeta: { dark: "#4d317f", accent: "#b99cff", surface: "#efe9ff" },
+  bosque: { dark: "#12372a", accent: "#76df9f", surface: "#e4f8ec" },
+  cobre: { dark: "#90451e", accent: "#ffc178", surface: "#fff0df" },
+  lima: { dark: "#435614", accent: "#d7fa36", surface: "#f4fbd0" },
+  oceano: { dark: "#0f587d", accent: "#2aa8e0", surface: "#e3f6ff" },
+  coral: { dark: "#8c3025", accent: "#ff6f59", surface: "#ffeae5" },
+  rosa: { dark: "#87314e", accent: "#ef6d9a", surface: "#ffe8f0" },
+  sol: { dark: "#795500", accent: "#f8bd24", surface: "#fff6d8" },
+  menta: { dark: "#167154", accent: "#46ca9a", surface: "#e2f9ef" }
+};
 
 function formatMoney(value) { return currency.format(Number(value) || 0); }
 function getQuotes() { return JSON.parse(localStorage.getItem(quotesKey) || "[]"); }
@@ -40,10 +57,16 @@ const contactLink = (contact, quoteName) => `https://wa.me/549${contact.phone}?t
 function renderDoc() {
   const data = state();
   const f = data.fields;
-  const theme = f["doc-theme"] || "lima";
+  const primary = "verde-boston";
+  const secondary = "blanco";
+  const primaryColor = documentColors[primary];
+  const secondaryColor = documentColors[secondary];
   const doc = $("#quote-doc");
-  doc.dataset.theme = theme;
-  document.querySelectorAll(".theme-swatch").forEach((s) => s.classList.toggle("active", s.dataset.theme === theme));
+  doc.style.setProperty("--dk", primaryColor.dark);
+  doc.style.setProperty("--ac", secondaryColor.accent);
+  doc.style.setProperty("--sf", secondaryColor.surface);
+  doc.style.setProperty("--on", primaryColor.dark);
+  doc.style.setProperty("--head-fg", primaryColor.foreground || "#ffffff");
   const subtotal = data.items.reduce((sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.price) || 0), 0);
   const taxRate = Number(f["tax-rate"]) || 0;
   const rows = data.items.filter((item) => item.description.trim() || Number(item.price)).map((item, i) => {
@@ -78,11 +101,6 @@ function renderDoc() {
     </section>
     <footer class="d-foot"><b>BE MERCH</b><span>Merchandising empresarial y eventos</span><span class="d-contacts">${contacts.map((c) => `${c.name}: <a href="${contactLink(c, f["client-name"] || f["project-name"] || $("#quote-number").textContent)}" target="_blank" rel="noopener">${c.phone}</a>`).join("<br>")}</span></footer>`;
 }
-
-document.querySelectorAll(".theme-swatch").forEach((swatch) => swatch.addEventListener("click", () => {
-  $("#doc-theme").value = swatch.dataset.theme;
-  calculate();
-}));
 
 function addItem(item = {}) {
   const row = template.content.firstElementChild.cloneNode(true);
@@ -123,7 +141,7 @@ function defaultState() {
   const today = new Date();
   const due = new Date(today);
   due.setDate(today.getDate() + 15);
-  return { fields: Object.fromEntries(fields.map((id) => [id, id === "issue-date" ? today.toISOString().slice(0, 10) : id === "due-date" ? due.toISOString().slice(0, 10) : id === "payment-terms" ? "50% anticipo · 50% contra entrega" : id === "delivery-time" ? "15 a 20 días hábiles" : id === "tax-rate" ? "21" : id === "doc-theme" ? "lima" : ""])), items: [{ description: "", quantity: 1, price: "" }] };
+  return { fields: Object.fromEntries(fields.map((id) => [id, id === "issue-date" ? today.toISOString().slice(0, 10) : id === "due-date" ? due.toISOString().slice(0, 10) : id === "payment-terms" ? "50% anticipo · 50% contra entrega" : id === "delivery-time" ? "15 a 20 días hábiles" : id === "tax-rate" ? "21" : ""])), items: [{ description: "", quantity: 1, price: "" }] };
 }
 
 function loadQuote(quote) {
