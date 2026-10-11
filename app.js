@@ -4,7 +4,7 @@ const quotesKey = "be-merch-quotes-v1";
 const $ = (selector) => document.querySelector(selector);
 const list = $("#items-list");
 const template = $("#item-template");
-const fields = ["client-name", "contact-name", "contact-email", "project-name", "issue-date", "due-date", "payment-terms", "delivery-time", "notes", "tax-rate"];
+const fields = ["client-name", "contact-name", "contact-email", "project-name", "issue-date", "due-date", "payment-terms", "delivery-time", "notes", "tax-rate", "doc-theme"];
 let activeQuoteId = null;
 
 function formatMoney(value) { return currency.format(Number(value) || 0); }
@@ -27,8 +27,62 @@ function calculate() {
   $("#tax-total").textContent = formatMoney(tax);
   $("#grand-total").textContent = formatMoney(subtotal + tax);
   $("#summary-count").textContent = `${list.children.length} ÍTEM${list.children.length === 1 ? "" : "S"}`;
+  renderDoc();
   save();
 }
+
+const escapeHtml = (text) => String(text ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const formatDate = (iso) => iso ? iso.split("-").reverse().join("/") : "-";
+const contacts = [{ name: "Lua", phone: "2336419074" }, { name: "Andres", phone: "2302566844" }];
+// Prefijo 549: código de país de Argentina para móviles en WhatsApp.
+const contactLink = (contact, quoteName) => `https://wa.me/549${contact.phone}?text=${encodeURIComponent(`Te escribo por el presupuesto de ${quoteName}...`)}`;
+
+function renderDoc() {
+  const data = state();
+  const f = data.fields;
+  const theme = f["doc-theme"] || "lima";
+  const doc = $("#quote-doc");
+  doc.dataset.theme = theme;
+  document.querySelectorAll(".theme-swatch").forEach((s) => s.classList.toggle("active", s.dataset.theme === theme));
+  const subtotal = data.items.reduce((sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.price) || 0), 0);
+  const taxRate = Number(f["tax-rate"]) || 0;
+  const rows = data.items.filter((item) => item.description.trim() || Number(item.price)).map((item, i) => {
+    const qty = Number(item.quantity) || 0;
+    const price = Number(item.price) || 0;
+    return `<tr><td class="d-n">${String(i + 1).padStart(2, "0")}</td><td>${escapeHtml(item.description)}</td><td class="d-r">${qty}</td><td class="d-r">${formatMoney(price)}</td><td class="d-r d-b">${formatMoney(qty * price)}</td></tr>`;
+  }).join("");
+  doc.innerHTML = `
+    <header class="d-head">
+      <img src="img/Logo BE Merch largo.png" alt="BE MERCH" />
+      <div><span>PRESUPUESTO</span><strong>${escapeHtml($("#quote-number").textContent)}</strong></div>
+    </header>
+    <div class="d-stripe"></div>
+    <section class="d-intro">
+      <div><span class="d-label">PREPARADO PARA</span><h2>${escapeHtml(f["client-name"] || "Cliente")}</h2>
+        <p>${escapeHtml(f["contact-name"])}${f["contact-name"] && f["contact-email"] ? " · " : ""}${escapeHtml(f["contact-email"])}</p></div>
+      <div class="d-dates"><div><span class="d-label">EMISIÓN</span><b>${formatDate(f["issue-date"])}</b></div><div><span class="d-label">VÁLIDO HASTA</span><b>${formatDate(f["due-date"])}</b></div></div>
+    </section>
+    ${f["project-name"] ? `<div class="d-project"><span class="d-label">PROYECTO</span><strong>${escapeHtml(f["project-name"])}</strong></div>` : ""}
+    <table class="d-table"><thead><tr><th>#</th><th>DESCRIPCIÓN</th><th class="d-r">CANT.</th><th class="d-r">PRECIO UNIT.</th><th class="d-r">TOTAL</th></tr></thead><tbody>${rows}</tbody></table>
+    <section class="d-bottom">
+      <div class="d-terms">
+        <span class="d-label">CONDICIONES DE PAGO</span><p>${escapeHtml(f["payment-terms"])}</p>
+        <span class="d-label">TIEMPO DE ENTREGA</span><p>${escapeHtml(f["delivery-time"])}</p>
+        ${f.notes ? `<span class="d-label">OTROS DETALLES</span><p>${escapeHtml(f.notes).replace(/\n/g, "<br>")}</p>` : ""}
+      </div>
+      <div class="d-totals">
+        <div><span>Subtotal</span><b>${formatMoney(subtotal)}</b></div>
+        <div><span>${taxRate ? `IVA ${String(taxRate).replace(".", ",")}%` : "Sin IVA"}</span><b>${formatMoney(subtotal * taxRate / 100)}</b></div>
+        <div class="d-grand"><span>TOTAL</span><strong>${formatMoney(subtotal * (1 + taxRate / 100))}</strong></div>
+      </div>
+    </section>
+    <footer class="d-foot"><b>BE MERCH</b><span>Merchandising empresarial y eventos</span><span class="d-contacts">${contacts.map((c) => `${c.name}: <a href="${contactLink(c, f["client-name"] || f["project-name"] || $("#quote-number").textContent)}" target="_blank" rel="noopener">${c.phone}</a>`).join("<br>")}</span></footer>`;
+}
+
+document.querySelectorAll(".theme-swatch").forEach((swatch) => swatch.addEventListener("click", () => {
+  $("#doc-theme").value = swatch.dataset.theme;
+  calculate();
+}));
 
 function addItem(item = {}) {
   const row = template.content.firstElementChild.cloneNode(true);
@@ -69,7 +123,7 @@ function defaultState() {
   const today = new Date();
   const due = new Date(today);
   due.setDate(today.getDate() + 15);
-  return { fields: Object.fromEntries(fields.map((id) => [id, id === "issue-date" ? today.toISOString().slice(0, 10) : id === "due-date" ? due.toISOString().slice(0, 10) : id === "payment-terms" ? "50% anticipo · 50% contra entrega" : id === "delivery-time" ? "15 a 20 días hábiles" : id === "tax-rate" ? "21" : ""])), items: [{ description: "", quantity: 1, price: "" }] };
+  return { fields: Object.fromEntries(fields.map((id) => [id, id === "issue-date" ? today.toISOString().slice(0, 10) : id === "due-date" ? due.toISOString().slice(0, 10) : id === "payment-terms" ? "50% anticipo · 50% contra entrega" : id === "delivery-time" ? "15 a 20 días hábiles" : id === "tax-rate" ? "21" : id === "doc-theme" ? "lima" : ""])), items: [{ description: "", quantity: 1, price: "" }] };
 }
 
 function loadQuote(quote) {
@@ -139,7 +193,91 @@ fields.forEach((id) => $(`#${id}`).addEventListener("input", save));
 $("#tax-rate").addEventListener("change", calculate);
 $("#add-item").addEventListener("click", () => { addItem(); calculate(); });
 $("#add-item-mobile").addEventListener("click", () => { addItem(); calculate(); });
-$("#save-draft").addEventListener("click", () => { save(); notify("Borrador guardado correctamente."); });
+$("#save-draft").addEventListener("click", () => { save(); $("#draft-dialog").hidden = false; $("#draft-continue").focus(); });
+$("#draft-continue").addEventListener("click", () => { $("#draft-dialog").hidden = true; notify("Borrador guardado correctamente."); });
+$("#draft-home").addEventListener("click", () => { $("#draft-dialog").hidden = true; showDashboard(); notify("Borrador guardado correctamente."); });
+$("#draft-dialog").addEventListener("click", (event) => { if (event.target === event.currentTarget) event.currentTarget.hidden = true; });
+
+function applyTheme(dark) {
+  document.documentElement.classList.toggle("dark", dark);
+  $("#theme-toggle").textContent = dark ? "☀" : "☾";
+  document.querySelector('meta[name="theme-color"]').content = dark ? "#121311" : "#1d1e1c";
+}
+$("#theme-toggle").addEventListener("click", () => {
+  const dark = !document.documentElement.classList.contains("dark");
+  localStorage.setItem("be-merch-theme", dark ? "dark" : "light");
+  applyTheme(dark);
+});
+applyTheme(localStorage.getItem("be-merch-theme") === "dark");
+
+$("#whatsapp-quote").addEventListener("click", async () => {
+  save();
+  const f = state().fields;
+  const number = $("#quote-number").textContent;
+  const text = `Presupuesto ${number} - BE MERCH${f["client-name"] ? ` para ${f["client-name"]}` : ""}`;
+  const fileName = `Presupuesto ${number.replace("#", "")}.pdf`;
+  const quotes = getQuotes();
+  const quote = quotes.find((entry) => entry.id === activeQuoteId);
+  if (quote) { quote.status = "Enviado"; saveQuotes(quotes); }
+  const canShareFiles = Boolean(navigator.canShare?.({ files: [new File([""], "a.pdf", { type: "application/pdf" })] }));
+  // Se abre la pestaña antes del await para que el navegador no la bloquee.
+  if (!canShareFiles) window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+  try {
+    const blob = await buildPdf();
+    const file = new File([blob], fileName, { type: "application/pdf" });
+    if (canShareFiles && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], text });
+    } else {
+      const url = URL.createObjectURL(blob);
+      Object.assign(document.createElement("a"), { href: url, download: fileName }).click();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      notify("PDF descargado: adjuntalo en el chat de WhatsApp.");
+    }
+  } catch (error) {
+    if (error.name !== "AbortError") notify("No se pudo generar el PDF.");
+  }
+});
+
+async function buildPdf() {
+  renderDoc();
+  const holder = document.createElement("div");
+  holder.style.cssText = "position:fixed;left:-10000px;top:0;width:794px";
+  const clone = $("#quote-doc").cloneNode(true);
+  clone.style.display = "block";
+  clone.removeAttribute("id");
+  holder.append(clone);
+  document.body.append(holder);
+  try {
+    await Promise.all([...clone.querySelectorAll("img")].map((img) => img.decode().catch(() => {})));
+    // html2canvas ignora filter:invert, así que el logo se invierte a mano.
+    const logo = clone.querySelector(".d-head img");
+    if (logo) {
+      const canvas = document.createElement("canvas");
+      canvas.width = logo.naturalWidth;
+      canvas.height = logo.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(logo, 0, 0);
+      const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < pixels.data.length; i += 4) {
+        pixels.data[i] = 255 - pixels.data[i];
+        pixels.data[i + 1] = 255 - pixels.data[i + 1];
+        pixels.data[i + 2] = 255 - pixels.data[i + 2];
+      }
+      ctx.putImageData(pixels, 0, 0);
+      logo.src = canvas.toDataURL("image/png");
+      logo.style.filter = "none";
+      await logo.decode().catch(() => {});
+    }
+    return await html2pdf().set({
+      margin: 0,
+      image: { type: "jpeg", quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    }).from(clone).outputPdf("blob");
+  } finally {
+    holder.remove();
+  }
+}
 $("#print-quote").addEventListener("click", () => window.print());
 $("#download-quote").addEventListener("click", () => window.print());
 $("#send-quote").addEventListener("click", () => {

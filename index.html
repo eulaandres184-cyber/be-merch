@@ -17,8 +17,7 @@
         <img class="brand-mark" src="img/Logo BE Merch largo.png" alt="BE MERCH" />
       </a>
       <div class="topbar-actions">
-        <span class="sync-status"><i></i> Guardado</span>
-        <button class="avatar" aria-label="Abrir perfil">AM</button>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Cambiar modo oscuro">☾</button>
       </div>
     </header>
 
@@ -26,9 +25,7 @@
       <section class="dashboard-view" id="dashboard-view">
         <section class="page-heading">
           <div>
-            <p class="eyebrow">GESTIÓN COMERCIAL</p>
             <h1>Presupuestos</h1>
-            <p class="heading-copy">Todos los presupuestos creados, en un solo lugar.</p>
           </div>
           <button class="button button-dark" id="new-quote">Nuevo presupuesto <span>+</span></button>
         </section>
@@ -113,7 +110,7 @@
             </div>
             <div class="form-grid">
               <label class="field"><span>CONDICIONES DE PAGO</span>
-                <select id="payment-terms"><option>50% anticipo · 50% contra entrega</option><option>Pago anticipado</option><option>30 días fecha de factura</option></select>
+                <select id="payment-terms"><option>50% anticipo · 50% contra entrega</option><option>50% anticipo · 50% con e-cheq hasta 20 días</option><option>Pago anticipado</option><option>30 días fecha de factura</option></select>
               </label>
               <label class="field"><span>TIEMPO DE ENTREGA</span><input id="delivery-time" value="15 a 20 días hábiles" /></label>
               <label class="field field-wide"><span>OTROS DETALLES</span><textarea id="notes" rows="3" placeholder="Incluí aquí especificaciones, detalles de entrega o aclaraciones importantes."></textarea></label>
@@ -129,7 +126,19 @@
               <label class="tax-line"><span>Impuestos</span><select id="tax-rate"><option value="21">IVA 21%</option><option value="10.5">IVA 10,5%</option><option value="0">Sin IVA</option></select><strong id="tax-total">$0</strong></label>
             </div>
             <div class="grand-total"><span>TOTAL</span><strong id="grand-total">$0</strong></div>
+            <div class="theme-picker">
+              <span>COLOR DEL DOCUMENTO</span>
+              <input type="hidden" id="doc-theme" value="lima" />
+              <div>
+                <button type="button" class="theme-swatch" data-theme="lima" style="--s:#d7fa36" aria-label="Lima"></button>
+                <button type="button" class="theme-swatch" data-theme="oceano" style="--s:#2aa8e0" aria-label="Océano"></button>
+                <button type="button" class="theme-swatch" data-theme="coral" style="--s:#ff6f59" aria-label="Coral"></button>
+                <button type="button" class="theme-swatch" data-theme="violeta" style="--s:#8b6cf0" aria-label="Violeta"></button>
+                <button type="button" class="theme-swatch" data-theme="bosque" style="--s:#2fb872" aria-label="Bosque"></button>
+              </div>
+            </div>
             <button class="button button-lime button-full" id="send-quote">Enviar presupuesto <span>→</span></button>
+            <button class="button button-whatsapp button-full" id="whatsapp-quote">Enviar por WhatsApp <span>↗</span></button>
             <button class="button button-outline button-full" id="download-quote">Descargar PDF <span>↓</span></button>
           </div>
           <p class="autosave-note"><span>●</span> Los cambios se guardan automáticamente.</p>
@@ -138,6 +147,17 @@
       </section>
     </main>
 
+    <div class="quote-doc" id="quote-doc" data-theme="lima"></div>
+    <div class="dialog-backdrop" id="draft-dialog" hidden>
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="draft-dialog-title">
+        <h2 id="draft-dialog-title">Borrador guardado</h2>
+        <p>¿Querés volver a la página inicial o seguir editando el presupuesto?</p>
+        <div class="dialog-actions">
+          <button class="button button-ghost" id="draft-continue" type="button">Seguir editando</button>
+          <button class="button button-dark" id="draft-home" type="button">Ir al inicio</button>
+        </div>
+      </div>
+    </div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <template id="item-template">
       <div class="item-row">
@@ -165,6 +185,7 @@
         </select>
       </article>
     </template>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js" defer></script>
     <script src="app.js"></script>
   </body>
 </html>
