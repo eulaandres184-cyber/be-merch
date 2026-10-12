@@ -7,23 +7,6 @@ const list = $("#items-list");
 const template = $("#item-template");
 const fields = ["project-name", "issue-date", "due-date", "payment-terms", "delivery-time", "notes", "tax-rate"];
 let activeQuoteId = null;
-const documentColors = {
-  "verde-boston": { dark: "#006B54", accent: "#72B8A3", surface: "#E6F3EF", foreground: "#ffffff" },
-  negro: { dark: "#000000", accent: "#000000", surface: "#f0f0f0", foreground: "#ffffff" },
-  blanco: { dark: "#ffffff", accent: "#ffffff", surface: "#f5f5f5", foreground: "#1e201d" },
-  grafito: { dark: "#1e201d", accent: "#c9cfc2", surface: "#f1f3ed", foreground: "#ffffff" },
-  marino: { dark: "#0f3d5e", accent: "#69d4ff", surface: "#e5f6ff" },
-  bordo: { dark: "#7a1f2b", accent: "#ff917c", surface: "#ffe9e5" },
-  violeta: { dark: "#4d317f", accent: "#b99cff", surface: "#efe9ff" },
-  bosque: { dark: "#12372a", accent: "#76df9f", surface: "#e4f8ec" },
-  cobre: { dark: "#90451e", accent: "#ffc178", surface: "#fff0df" },
-  lima: { dark: "#435614", accent: "#d7fa36", surface: "#f4fbd0" },
-  oceano: { dark: "#0f587d", accent: "#2aa8e0", surface: "#e3f6ff" },
-  coral: { dark: "#8c3025", accent: "#ff6f59", surface: "#ffeae5" },
-  rosa: { dark: "#87314e", accent: "#ef6d9a", surface: "#ffe8f0" },
-  sol: { dark: "#795500", accent: "#f8bd24", surface: "#fff6d8" },
-  menta: { dark: "#167154", accent: "#46ca9a", surface: "#e2f9ef" }
-};
 
 function parseAmount(value) {
   const normalized = String(value ?? "").trim().replace(/\s/g, "").replace(/[^\d.,-]/g, "");
@@ -68,16 +51,11 @@ const contactLink = (contact, quoteName) => `https://wa.me/549${contact.phone}?t
 function renderDoc() {
   const data = state();
   const f = data.fields;
-  const primary = "verde-boston";
-  const secondary = "blanco";
-  const primaryColor = documentColors[primary];
-  const secondaryColor = documentColors[secondary];
   const doc = $("#quote-doc");
-  doc.style.setProperty("--dk", primaryColor.dark);
-  doc.style.setProperty("--ac", secondaryColor.accent);
-  doc.style.setProperty("--sf", secondaryColor.surface);
-  doc.style.setProperty("--on", primaryColor.dark);
-  doc.style.setProperty("--head-fg", primaryColor.foreground || "#ffffff");
+  doc.style.setProperty("--dk", "#006B54");
+  doc.style.setProperty("--ac", "#ffffff");
+  doc.style.setProperty("--sf", "#f5f5f5");
+  doc.style.setProperty("--head-fg", "#ffffff");
   const subtotal = data.items.reduce((sum, item) => sum + (Number(item.quantity) || 0) * parseAmount(item.price), 0);
   const taxRate = Number(f["tax-rate"]) || 0;
   const rows = data.items.filter((item) => item.description.trim() || parseAmount(item.price)).map((item, i) => {
@@ -202,7 +180,7 @@ function renderQuotes() {
   quotes.forEach((quote) => {
     const row = $("#quote-template").content.firstElementChild.cloneNode(true);
     row.querySelector(".quote-id").textContent = quote.number;
-    row.querySelector(".quote-client").textContent = quote.data.fields["project-name"] || "Proyecto sin nombre";
+    row.querySelector(".quote-title").textContent = quote.data.fields["project-name"] || "Proyecto sin nombre";
     row.querySelector(".quote-date").textContent = new Intl.DateTimeFormat("es-AR", { dateStyle: "medium" }).format(new Date(quote.updatedAt));
     row.querySelector(".quote-value").textContent = formatMoney(quote.total);
     const status = row.querySelector(".quote-status");

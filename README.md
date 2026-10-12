@@ -10,13 +10,13 @@ Abrí `index.html` en un navegador, o serví esta carpeta con cualquier hosting 
 
 - Pantalla inicial con todos los presupuestos creados y su estado.
 - Creación y edición de presupuestos desde el historial.
-- Datos de cliente, contacto y proyecto.
+- Nombre de proyecto, usado como título del presupuesto.
 - Ítems ilimitados con cálculo automático de subtotal, IVA y total.
 - Condiciones de pago, entrega y notas.
-- Persistencia automática en el navegador, compatible con el borrador previo.
+- Persistencia automática en el almacenamiento local del navegador; los datos no se sincronizan entre dispositivos ni con Firebase.
 - Vista de impresión optimizada para guardar el presupuesto como PDF.
 - PDF con identidad visual fija: Verde Boston como color principal y blanco como acento.
 
 ## Publicación online
 
-Es una app estática y puede publicarse directamente desde esta carpeta en **Netlify**, **Vercel**, **GitHub Pages** o cualquier hosting estático. Para que varios usuarios compartan los mismos presupuestos desde distintos dispositivos, se debe conectar a un backend autenticado (por ejemplo, Supabase o Firebase).
+Es una app estática publicada en Firebase Hosting. El proyecto todavía no tiene una app Firebase Web ni Firestore/Realtime Database configurados. Para compartir presupuestos entre dispositivos hay que habilitar una base de datos y autenticación, y migrar los datos locales existentes.
