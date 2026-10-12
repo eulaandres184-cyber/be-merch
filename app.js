@@ -4,7 +4,7 @@ const quotesKey = "be-merch-quotes-v1";
 const $ = (selector) => document.querySelector(selector);
 const list = $("#items-list");
 const template = $("#item-template");
-const fields = ["client-name", "contact-name", "contact-email", "project-name", "issue-date", "due-date", "payment-terms", "delivery-time", "notes", "tax-rate"];
+const fields = ["client-name", "project-name", "issue-date", "due-date", "payment-terms", "delivery-time", "notes", "tax-rate"];
 let activeQuoteId = null;
 const documentColors = {
   "verde-boston": { dark: "#006B54", accent: "#72B8A3", surface: "#E6F3EF", foreground: "#ffffff" },
@@ -82,7 +82,7 @@ function renderDoc() {
     <div class="d-stripe"></div>
     <section class="d-intro">
       <div><span class="d-label">PREPARADO PARA</span><h2>${escapeHtml(f["client-name"] || "Cliente")}</h2>
-        <p>${escapeHtml(f["contact-name"])}${f["contact-name"] && f["contact-email"] ? " · " : ""}${escapeHtml(f["contact-email"])}</p></div>
+        </div>
       <div class="d-dates"><div><span class="d-label">EMISIÓN</span><b>${formatDate(f["issue-date"])}</b></div><div><span class="d-label">VÁLIDO HASTA</span><b>${formatDate(f["due-date"])}</b></div></div>
     </section>
     ${f["project-name"] ? `<div class="d-project"><span class="d-label">PROYECTO</span><strong>${escapeHtml(f["project-name"])}</strong></div>` : ""}
@@ -141,7 +141,7 @@ function defaultState() {
   const today = new Date();
   const due = new Date(today);
   due.setDate(today.getDate() + 15);
-  return { fields: Object.fromEntries(fields.map((id) => [id, id === "issue-date" ? today.toISOString().slice(0, 10) : id === "due-date" ? due.toISOString().slice(0, 10) : id === "payment-terms" ? "50% anticipo · 50% contra entrega" : id === "delivery-time" ? "15 a 20 días hábiles" : id === "tax-rate" ? "21" : ""])), items: [{ description: "", quantity: 1, price: "" }] };
+  return { fields: Object.fromEntries(fields.map((id) => [id, id === "issue-date" ? today.toISOString().slice(0, 10) : id === "due-date" ? due.toISOString().slice(0, 10) : id === "tax-rate" ? "0" : ""])), items: [{ description: "", quantity: 1, price: "" }] };
 }
 
 function loadQuote(quote) {
@@ -299,13 +299,13 @@ async function buildPdf() {
 $("#print-quote").addEventListener("click", () => window.print());
 $("#download-quote").addEventListener("click", () => window.print());
 $("#send-quote").addEventListener("click", () => {
-  const email = $("#contact-email").value.trim();
-  if (!email) { $("#contact-email").focus(); notify("Ingresá el email del contacto para enviar el presupuesto."); return; }
   save();
   const quotes = getQuotes();
-  quotes.find((entry) => entry.id === activeQuoteId).status = "Enviado";
+  const quote = quotes.find((entry) => entry.id === activeQuoteId);
+  if (!quote) return;
+  quote.status = "Enviado";
   saveQuotes(quotes);
-  notify(`Presupuesto listo para enviar a ${email}.`);
+  notify("Presupuesto marcado como enviado.");
 });
 $("#new-quote").addEventListener("click", createQuote);
 $("#empty-new-quote").addEventListener("click", createQuote);

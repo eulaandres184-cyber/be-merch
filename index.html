@@ -84,8 +84,6 @@
             </div>
             <div class="form-grid">
               <label class="field field-wide"><span>EMPRESA / CLIENTE</span><input id="client-name" placeholder="Ej. Estudio Norte" /></label>
-              <label class="field"><span>PERSONA DE CONTACTO</span><input id="contact-name" placeholder="Nombre y apellido" /></label>
-              <label class="field"><span>EMAIL</span><input id="contact-email" type="email" placeholder="nombre@empresa.com" /></label>
               <label class="field field-wide"><span>NOMBRE DEL EVENTO O PROYECTO</span><input id="project-name" placeholder="Ej. Kit de bienvenida 2026" /></label>
             </div>
           </article>
@@ -111,10 +109,8 @@
               <div><h2>Condiciones y notas</h2><p>Información que verá el cliente en el presupuesto.</p></div>
             </div>
             <div class="form-grid">
-              <label class="field"><span>CONDICIONES DE PAGO</span>
-                <select id="payment-terms"><option>50% anticipo · 50% contra entrega</option><option>50% anticipo · 50% con e-cheq hasta 20 días</option><option>Pago anticipado</option><option>30 días fecha de factura</option></select>
-              </label>
-              <label class="field"><span>TIEMPO DE ENTREGA</span><input id="delivery-time" value="15 a 20 días hábiles" /></label>
+              <label class="field"><span>FORMAS DE PAGO</span><input id="payment-terms" /></label>
+              <label class="field"><span>TIEMPO DE ENTREGA</span><input id="delivery-time" /></label>
               <label class="field field-wide"><span>OTROS DETALLES</span><textarea id="notes" rows="3" placeholder="Incluí aquí especificaciones, detalles de entrega o aclaraciones importantes."></textarea></label>
             </div>
           </article>
@@ -125,10 +121,10 @@
             <div class="summary-heading"><span>RESUMEN</span><span id="summary-count">0 ÍTEMS</span></div>
             <div class="summary-lines">
               <div><span>Subtotal</span><strong id="subtotal">$0</strong></div>
-              <label class="tax-line"><span>Impuestos</span><select id="tax-rate"><option value="21">IVA 21%</option><option value="10.5">IVA 10,5%</option><option value="0">Sin IVA</option></select><strong id="tax-total">$0</strong></label>
+              <label class="tax-line"><span>Impuestos</span><select id="tax-rate"><option value="0">Sin IVA</option><option value="21">IVA 21%</option><option value="10.5">IVA 10,5%</option></select><strong id="tax-total">$0</strong></label>
             </div>
             <div class="grand-total"><span>TOTAL</span><strong id="grand-total">$0</strong></div>
-            <button class="button button-lime button-full" id="send-quote">Enviar presupuesto <span>→</span></button>
+            <button class="button button-lime button-full" id="send-quote">Marcar como enviado <span>→</span></button>
             <button class="button button-whatsapp button-full" id="whatsapp-quote">Enviar por WhatsApp <span>↗</span></button>
             <button class="button button-outline button-full" id="download-quote">Descargar PDF <span>↓</span></button>
           </div>
