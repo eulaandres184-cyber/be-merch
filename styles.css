@@ -57,4 +57,17 @@ html.dark .add-mobile{background:#262824;border-color:var(--line);color:var(--in
 @media screen{body{zoom:1.15}}
 
 .quote-doc .d-contacts a{color:inherit;text-decoration:underline}
+.quote-status[data-status="Borrador"]{background:#fff0c2;color:#684d00}
+.quote-status[data-status="Enviado"]{background:#dceeff;color:#124b75}
+.quote-status[data-status="Aprobado"]{background:#d9f2df;color:#14562a}
+.quote-status[data-status="Rechazado"]{background:#ffe0e0;color:#8a2222}
+html.dark .quote-status[data-status="Borrador"]{background:#554416;color:#ffe9a6}
+html.dark .quote-status[data-status="Enviado"]{background:#183d57;color:#c3e5ff}
+html.dark .quote-status[data-status="Aprobado"]{background:#1b482a;color:#c3f0ce}
+html.dark .quote-status[data-status="Rechazado"]{background:#572525;color:#ffcaca}
+.item-row .item-price{text-align:right}
+.quote-doc .d-head img{height:62px}
+.quote-doc .d-head strong{font-size:18px}
+.quote-main{grid-template-columns:110px minmax(0,1fr)}
 .theme-picker p{margin:5px 0 14px;color:var(--muted);font-size:11px;line-height:1.45}.color-choice{margin-top:13px}.color-choice>b{display:block;margin-bottom:7px;font:500 9px "DM Mono",monospace;letter-spacing:.08em;color:var(--muted)}.swatches{display:flex;align-items:center;gap:9px}.swatches em{font-size:12px;font-style:normal;font-weight:700}.theme-swatch{width:23px;height:23px;border:2px solid transparent;border-radius:50%;background:var(--s)}.theme-swatch.active{border-color:var(--paper);box-shadow:0 0 0 2px var(--ink)}.theme-swatch.light-swatch{border-color:#c6c9c0}.theme-swatch.light-swatch.active{border-color:var(--paper);box-shadow:0 0 0 2px var(--ink)}html.dark .theme-swatch.active{border-color:var(--paper);box-shadow:0 0 0 2px #fff}.quote-doc .d-head,.quote-doc .d-table th,.quote-doc .d-grand{color:var(--head-fg,#fff)}@media(max-width:780px){.theme-swatch{width:26px;height:26px}.theme-picker p{font-size:12px}}
+@media(max-width:780px){body{zoom:1}h1{font-size:34px}.heading-actions{grid-template-columns:1fr}.heading-actions .button{width:100%}}

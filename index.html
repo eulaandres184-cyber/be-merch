@@ -80,11 +80,10 @@
           <article class="card client-card">
             <div class="card-title">
               <div class="section-icon">01</div>
-              <div><h2>Cliente y proyecto</h2><p>¿Para quién es esta propuesta?</p></div>
+              <div><h2>Proyecto</h2><p>Identificá el presupuesto con el nombre del proyecto.</p></div>
             </div>
             <div class="form-grid">
-              <label class="field field-wide"><span>EMPRESA / CLIENTE</span><input id="client-name" placeholder="Ej. Estudio Norte" /></label>
-              <label class="field field-wide"><span>NOMBRE DEL EVENTO O PROYECTO</span><input id="project-name" placeholder="Ej. Kit de bienvenida 2026" /></label>
+              <label class="field field-wide"><span>NOMBRE DEL PROYECTO</span><input id="project-name" placeholder="Ej. Kit de bienvenida 2026" /></label>
             </div>
           </article>
 
@@ -150,7 +149,7 @@
       <div class="item-row">
         <input class="item-description" aria-label="Descripción del producto" placeholder="Producto o servicio" />
         <input class="item-quantity" aria-label="Cantidad" type="number" min="1" value="1" />
-        <input class="item-price" aria-label="Precio unitario" type="number" min="0" step="0.01" placeholder="0" />
+        <input class="item-price" aria-label="Precio unitario" type="text" inputmode="decimal" placeholder="0" />
         <strong class="item-total">$0</strong>
         <button class="remove-item" aria-label="Eliminar ítem">×</button>
       </div>
@@ -160,7 +159,6 @@
         <button class="quote-main" type="button">
           <span class="quote-id"></span>
           <span class="quote-client"></span>
-          <span class="quote-project"></span>
         </button>
         <span class="quote-date"></span>
         <strong class="quote-value"></strong>
